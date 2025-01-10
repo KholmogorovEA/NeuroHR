@@ -1,0 +1,126 @@
+<!-- <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нейро HR Chat</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Чат с Нейро HR</h1>
+        <div id="chat-box" class="chat-box"></div>
+        <input type="text" id="user-input" class="user-input" placeholder="Введите ваше сообщение...">
+        <button id="send-btn" class="send-btn">Отправить</button>
+    </div>
+
+    <script>
+        const sendMessage = () => {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() !== "") {
+                const chatBox = document.getElementById('chat-box');
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('user-message');
+                userMessage.innerHTML = `<strong>Вы:</strong> ${userInput}`;
+                chatBox.appendChild(userMessage);
+
+                document.getElementById('user-input').value = "";
+
+                // Отправка запроса на сервер
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ user_message: userInput })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('bot-message');
+                    botMessage.innerHTML = `<strong>Нейро HR:</strong> ${data.response_message}`;
+                    chatBox.appendChild(botMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight; // Прокручиваем чат вниз
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        };
+
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('user-input').addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нейро HR Чат</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Чат с Нейро HR</h1>
+        <div id="chat-box" class="chat-box"></div>
+        <select id="section-select" class="section-select">
+            <option value="about_me">О себе</option>
+            <option value="education">Образование</option>
+            <option value="professional">Профессиональная деятельность</option>
+            <option value="skills">Навыки</option>
+        </select>
+        <input type="text" id="user-input" class="user-input" placeholder="Введите ваше сообщение...">
+        <button id="send-btn" class="send-btn">Отправить</button>
+    </div>
+
+    <script>
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('user-input').addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            const section = document.getElementById('section-select').value;
+
+            if (userInput.trim() !== "") {
+                const chatBox = document.getElementById('chat-box');
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('user-message');
+                userMessage.innerHTML = `<strong>Вы:</strong> ${userInput}`;
+                chatBox.appendChild(userMessage);
+
+                document.getElementById('user-input').value = "";
+
+                fetch('http://localhost:8000/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ section: section, user_message: userInput })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const botMessage = document.createElement('div');
+                    botMessage.classList.add('bot-message');
+                    botMessage.innerHTML = `<strong>Нейро HR:</strong> ${data.response_message}`;
+                    chatBox.appendChild(botMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight; // Прокручиваем чат вниз
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+                            }
+                        }
+    </script>
+</body>
+</html>
